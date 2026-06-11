@@ -1,0 +1,85 @@
+# ============================================================================
+# Python Core & Byte-compiled files
+# ============================================================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# ============================================================================
+# Virtual Environments (Always ignore dependencies)
+# ============================================================================
+.venv/
+venv/
+ENV/
+env/
+Active-Env/
+*.venv
+
+# ============================================================================
+# Environment Variables, Secrets & Credentials (CRITICAL for security)
+# ============================================================================
+.env
+.env.*
+.secrets
+*.pem
+*.key
+secrets.toml
+
+# ============================================================================
+# Distribution / Packaging / Build Artifacts
+# ============================================================================
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# ============================================================================
+# Testing, Coverage, & Code Quality Tools
+# ============================================================================
+.htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.hypothesis/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ============================================================================
+# Jupyter Notebooks & Data Science
+# ============================================================================
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+
+# ============================================================================
+# IDEs and Editors (Optional but highly recommended)
+# ============================================================================
+# VS Code
+.vscode/
+
+# PyCharm / JetBrains
+.idea/
+
+# OS Generated
+.DS_Store
+Thumbs.db
