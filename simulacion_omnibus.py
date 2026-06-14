@@ -132,14 +132,15 @@ def demora_ffcc():
 # ──────────────────────────────────────────────────────────────
 
 def simular_viaje():
-    """Retorna el tiempo total de un viaje en minutos."""
-    total = 0.0
+    """Retorna el tiempo total y el desglose por componente, en minutos."""
+    t_tramos = t_semaforos = t_ffcc = t_paradas = 0.0
     for tipo, id_ in RECORRIDO:
-        if   tipo == 'T': total += tiempo_tramo(id_)
-        elif tipo == 'S': total += demora_semaforo(id_)
-        elif tipo == 'P': total += demora_parada(id_)
-        elif tipo == 'F': total += demora_ffcc()
-    return total
+        if   tipo == 'T': t_tramos    += tiempo_tramo(id_)
+        elif tipo == 'S': t_semaforos += demora_semaforo(id_)
+        elif tipo == 'P': t_paradas   += demora_parada(id_)
+        elif tipo == 'F': t_ffcc      += demora_ffcc()
+    total = t_tramos + t_semaforos + t_ffcc + t_paradas
+    return total, t_tramos, t_semaforos, t_ffcc, t_paradas
 
 
 # ──────────────────────────────────────────────────────────────
@@ -178,7 +179,9 @@ def valor_esperado_analitico():
 # Ejecución principal
 # ──────────────────────────────────────────────────────────────
 
-tiempos = np.array([simular_viaje() for _ in range(N)])
+resultados = np.array([simular_viaje() for _ in range(N)])
+tiempos = resultados[:, 0]
+sim_t, sim_s, sim_f, sim_p = resultados[:, 1:].mean(axis=0)
 
 media  = np.mean(tiempos)
 desvio = np.std(tiempos, ddof=1)
@@ -240,14 +243,20 @@ componentes   = ['Tramos', 'Semáforos', 'FFCC', 'Paradas']
 valores_anali = [e_t, e_s, e_f, e_p]
 colores       = ['steelblue', 'tomato', 'goldenrod', 'mediumseagreen']
 
+valores_sim = [sim_t, sim_s, sim_f, sim_p]
+
 bottom = 0
 for comp, val, col in zip(componentes, valores_anali, colores):
     ax2.bar('Analítico', val, bottom=bottom, color=col, label=f'{comp}: {val:.1f} min')
     bottom += val
 
-ax2.bar('Simulado', media, color='slategray', alpha=0.7, label=f'Media sim.: {media:.1f} min')
+bottom = 0
+for val, col in zip(valores_sim, colores):
+    ax2.bar('Simulado', val, bottom=bottom, color=col)
+    bottom += val
+
 ax2.set_ylabel('Minutos', fontsize=11)
-ax2.set_title('E[tiempo] analítico vs media simulada', fontsize=12)
+ax2.set_title('E[tiempo] analítico vs media simulada (por componente)', fontsize=12)
 ax2.legend(fontsize=9, loc='upper right')
 
 plt.suptitle('Simulación Monte Carlo — Ómnibus Interurbano | UNLu', fontsize=13, y=1.01)
