@@ -2,6 +2,8 @@
 
 # Los omnibus
 
+Salida → T1 → S1 → T2 → S2 → T3 → P1 → T4 → S3 → T5 → P2 → T6 → S4 → T7 → S5 → T8 → P3 → T9 → S6 → T10 → S7 → T11 → FFCC → S8 → T12 → P4 → T13 → Llegada
+
 Una empresa de viajes interurbanos tiene un recorrido como el siguiente:
 
 Las distancias en cada tramo son las de la tabla siguiente, donde se indica la velocidad esperada en cada tramo, aunque hay una baja probabilidad de que se encuentre mayor tránsito. Las velocidades de cada tramo son independientes de los demás tramos:
