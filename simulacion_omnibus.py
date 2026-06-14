@@ -213,6 +213,10 @@ print("\n── Resultados de la simulación ───────────�
 print(f"  Media simulada  : {media:6.2f} min  ({media/60:.2f} h)")
 print(f"  Desvío estándar : {desvio:6.2f} min")
 print(f"  Error vs E[X]   : {abs(media - e_total):6.2f} min")
+print(f"  Tramos          : {sim_t:6.2f} min")
+print(f"  Semáforos       : {sim_s:6.2f} min")
+print(f"  Cruce FFCC      : {sim_f:6.2f} min")
+print(f"  Paradas         : {sim_p:6.2f} min")
 
 print("\n── Horario y percentiles (α = 0,05) ────────────────────")
 print(f"  Horario sugerido          : {round(media):.0f} min")
@@ -226,24 +230,45 @@ print(SEP)
 
 fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 
-# — Histograma de distribución —
+componentes = ['Tramos', 'Semáforos', 'FFCC', 'Paradas']
+colores     = ['steelblue', 'tomato', 'goldenrod', 'mediumseagreen']
+
+# — Histograma apilado por composición de componentes —
 ax1 = axes[0]
-ax1.hist(tiempos, bins=40, color='steelblue', edgecolor='white', alpha=0.85, label='Viajes simulados')
-ax1.axvline(media, color='crimson',    ls='--', lw=2, label=f'Media: {media:.1f} min')
-ax1.axvline(p5,    color='seagreen',   ls=':',  lw=2, label=f'P5  (mín): {p5:.1f} min')
-ax1.axvline(p95,   color='darkorange', ls=':',  lw=2, label=f'P95 (máx): {p95:.1f} min')
+
+n_bins = 40
+counts, bin_edges = np.histogram(tiempos, bins=n_bins)
+bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2
+bin_width   = bin_edges[1] - bin_edges[0]
+
+composicion = np.zeros((n_bins, 4))
+for i in range(n_bins):
+    if i < n_bins - 1:
+        mask = (tiempos >= bin_edges[i]) & (tiempos < bin_edges[i + 1])
+    else:
+        mask = (tiempos >= bin_edges[i]) & (tiempos <= bin_edges[i + 1])
+    if mask.sum() > 0:
+        medias = resultados[mask, 1:].mean(axis=0)
+        composicion[i] = (medias / medias.sum()) * counts[i]
+
+bottom = np.zeros(n_bins)
+for j, (comp, col) in enumerate(zip(componentes, colores)):
+    ax1.bar(bin_centers, composicion[:, j], width=bin_width, bottom=bottom,
+            color=col, edgecolor='white', linewidth=0.2, label=comp)
+    bottom += composicion[:, j]
+
+ax1.axvline(media, color='crimson', ls='--', lw=2, label=f'Media: {media:.1f} min')
+ax1.axvline(p5,    color='black',   ls=':',  lw=2, label=f'P5  (mín): {p5:.1f} min')
+ax1.axvline(p95,   color='dimgray', ls=':',  lw=2, label=f'P95 (máx): {p95:.1f} min')
 ax1.set_xlabel('Tiempo de viaje (minutos)', fontsize=11)
 ax1.set_ylabel('Frecuencia', fontsize=11)
-ax1.set_title(f'Distribución de tiempos — {N} simulaciones', fontsize=12)
-ax1.legend(fontsize=10)
+ax1.set_title(f'Distribución de tiempos por componente — {N} simulaciones', fontsize=12)
+ax1.legend(fontsize=9)
 
-# — Comparación analítico vs simulado (barras apiladas del E[X]) —
+# — Comparación analítico vs simulado (barras apiladas por componente) —
 ax2 = axes[1]
-componentes   = ['Tramos', 'Semáforos', 'FFCC', 'Paradas']
 valores_anali = [e_t, e_s, e_f, e_p]
-colores       = ['steelblue', 'tomato', 'goldenrod', 'mediumseagreen']
-
-valores_sim = [sim_t, sim_s, sim_f, sim_p]
+valores_sim   = [sim_t, sim_s, sim_f, sim_p]
 
 bottom = 0
 for comp, val, col in zip(componentes, valores_anali, colores):
