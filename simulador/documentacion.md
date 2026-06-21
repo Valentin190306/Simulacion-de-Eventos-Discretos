@@ -227,7 +227,83 @@ Esto equivale a un intervalo central del $100\% \times (1 - \alpha) = 90\%$ para
 
 ---
 
-## 6. Estructura del archivo `simulacion_omnibus.py`
+## 6. Programación de horarios
+
+### 6.1 Circuito cerrado
+
+El recorrido simulado (13 tramos, 8 semáforos, 4 paradas, 1 cruce FFCC) forma un **circuito cerrado**: el vehículo parte de la terminal, completa el trayecto de 63 km, y regresa al mismo punto de origen. El tiempo simulado es, por lo tanto, un **Round Trip Time (RTT)** completo.
+
+### 6.2 Criterio de selección del tiempo de ciclo
+
+| Criterio | Tiempo | Viajes que exceden el horario |
+|---|---|---|
+| **Media** (~119 min) | 119 min | ≈50% |
+| **P90** (~127 min) | 127 min | ≈10% |
+| **P95** (~129 min) | 129 min | ≈5% |
+
+Se adopta el **P95** como tiempo de ciclo por las siguientes razones:
+
+- La documentación original (sección 5.1) recomienda usar P95 para programar el servicio: _el 95% de los viajes se completan dentro del tiempo programado y solo el 5% excede el horario previsto._
+- Usar la media implicaría que la mitad de los viajes demoren más de lo previsto, generando **atrasos acumulativos** a lo largo del día: un bus que llega tarde a la terminal retrasa su siguiente salida, el intervalo entre unidades se distorsiona, y los pasajeros en la parada experimentan **esperas mayores a la frecuencia nominal**.
+- Usar P95 **no retrasa el servicio**. Significa que el bus completa el circuito dentro del tiempo asignado el 95% de las veces, por lo que está disponible en terminal para su próxima salida programada. Los intervalos se mantienen estables durante todo el día, y el pasajero en cualquier parada ve un bus cada \(f\) minutos como está previsto.
+
+### 6.3 Relación ciclo–frecuencia–flota–descanso
+
+La cantidad de unidades necesarias se calcula como:
+
+\[
+\text{unidades} = \left\lceil \frac{\text{ciclo} + \text{descanso\_min}}{\text{frecuencia}} \right\rceil
+\]
+
+donde:
+
+- **ciclo**: P95 del tiempo de viaje (RTT)
+- **descanso\_min**: tiempo mínimo de descanso del conductor en terminal (default: 10 min)
+- **frecuencia**: intervalo entre salidas consecutivas desde la terminal
+
+Cada unidad opera en un **turno** de \( \text{turno} = \text{unidades} \times \text{frecuencia} \) minutos. Al completar el circuito, dispone de un **descanso real** de:
+
+\[
+\text{descanso\_real} = \text{turno} - \text{ciclo}
+\]
+
+que siempre es \(\geq \text{descanso\_min}\) por construcción.
+
+**Ejemplo con P95 = 129 min y descanso\_min = 10 min:**
+
+| Frecuencia | Unidades | Turno | Descanso real | Servicios/día (06:00–22:00) |
+|---|---|---|---|---|
+| 20 min | 7 | 140 min | 11 min | 48 |
+| 30 min | 5 | 150 min | 21 min | 32 |
+| 45 min | 4 | 180 min | 51 min | 22 |
+| 60 min | 3 | 180 min | 51 min | 16 |
+
+### 6.4 Ejemplo de horario (frecuencia 30 min, 5 unidades)
+
+```
+Unidad 1: 06:00 | 08:30 | 11:00 | 13:30 | 16:00 | 18:30 | 21:00
+Unidad 2: 06:30 | 09:00 | 11:30 | 14:00 | 16:30 | 19:00 | 21:30
+Unidad 3: 07:00 | 09:30 | 12:00 | 14:30 | 17:00 | 19:30
+Unidad 4: 07:30 | 10:00 | 12:30 | 15:00 | 17:30 | 20:00
+Unidad 5: 08:00 | 10:30 | 13:00 | 15:30 | 18:00 | 20:30
+```
+
+El intervalo en terminal de 21 min por vuelta permite al conductor descansar y absorber pequeñas demoras sin que el horario global se desvíe.
+
+### 6.5 Generación automatizada
+
+El script `generar_horario.py` calcula e imprime el horario completo para cualquier combinación de frecuencia y descanso mínimo, y genera un diagrama de Gantt de las unidades:
+
+```bash
+python generar_horario.py                          # default: 30 min, descanso 10 min
+python generar_horario.py --frecuencia 20          # cada 20 min
+python generar_horario.py --frecuencia 45 --descanso 15
+python generar_horario.py --no-plot                # solo texto
+```
+
+---
+
+## 7. Estructura del archivo `simulacion_omnibus.py`
 
 | Sección | Líneas | Descripción |
 |---------|:------:|-------------|
