@@ -251,9 +251,9 @@ Se adopta el **P95** como tiempo de ciclo por las siguientes razones:
 
 La cantidad de unidades necesarias se calcula como:
 
-\[
+$$
 \text{unidades} = \left\lceil \frac{\text{ciclo} + \text{descanso\_min}}{\text{frecuencia}} \right\rceil
-\]
+$$
 
 donde:
 
@@ -263,11 +263,11 @@ donde:
 
 Cada unidad opera en un **turno** de \( \text{turno} = \text{unidades} \times \text{frecuencia} \) minutos. Al completar el circuito, dispone de un **descanso real** de:
 
-\[
+$$
 \text{descanso\_real} = \text{turno} - \text{ciclo}
-\]
+$$
 
-que siempre es \(\geq \text{descanso\_min}\) por construcción.
+que siempre es >= descanso_min por construcción.
 
 **Ejemplo con P95 = 129 min y descanso\_min = 10 min:**
 
