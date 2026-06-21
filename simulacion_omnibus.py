@@ -216,6 +216,6 @@ if __name__ == '__main__':
     ax2.set_title('E[tiempo] analítico vs media simulada (por componente)', fontsize=12)
     ax2.legend(fontsize=9, loc='upper right')
 
-    plt.suptitle('Simulación Monte Carlo — Ómnibus Interurbano | UNLu', fontsize=13, y=1.01)
+    plt.suptitle('Simulación Monte Carlo — Ómnibus Interurbano | UNLu', fontsize=13, y=0.95)
     plt.tight_layout()
     plt.show()
