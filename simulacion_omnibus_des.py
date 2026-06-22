@@ -267,8 +267,8 @@ if __name__ == '__main__':
         bottom += composicion[:, j]
 
     ax1.axvline(media, color='crimson', ls='--', lw=2, label=f'Media: {media:.1f} min')
-    ax1.axvline(p5,    color='black',   ls=':',  lw=2, label=f'P5  (mín): {p5:.1f} min')
-    ax1.axvline(p95,   color='dimgray', ls=':',  lw=2, label=f'P95 (máx): {p95:.1f} min')
+    ax1.axvline(p5,    color='black',   ls=':',  lw=2, label=f'P{int(ALPHA*100):02d}  (mín): {p5:.1f} min')
+    ax1.axvline(p95,   color='dimgray', ls=':',  lw=2, label=f'P{int((1-ALPHA)*100):02d} (máx): {p95:.1f} min')
     ax1.set_xlabel('Tiempo de viaje (minutos)', fontsize=11)
     ax1.set_ylabel('Frecuencia', fontsize=11)
     ax1.set_title(f'Distribución de tiempos por componente — {N} simulaciones', fontsize=12)

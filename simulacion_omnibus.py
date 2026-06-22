@@ -155,10 +155,10 @@ if __name__ == '__main__':
     print(f"  Cruce FFCC      : {sim_f:6.2f} min")
     print(f"  Paradas         : {sim_p:6.2f} min")
 
-    print("\n── Horario y percentiles (α = 0,05) ────────────────────")
-    print(f"  Horario sugerido          : {round(media):.0f} min")
-    print(f"  Tiempo mínimo esperado P5 : {p5:.2f} min")
-    print(f"  Tiempo máximo esperado P95: {p95:.2f} min")
+    print(f"\n── Horario y percentiles (α = {ALPHA}) ────────────────────────")
+    print(f"  Horario sugerido           : {round(media):.0f} min")
+    print(f"  Tiempo mínimo esperado P{int(ALPHA*100):02d} : {p5:.2f} min")
+    print(f"  Tiempo máximo esperado P{int((1-ALPHA)*100):02d}: {p95:.2f} min")
     print(SEP)
 
     # ── Visualización ────────────────────────────────────────
@@ -191,8 +191,8 @@ if __name__ == '__main__':
         bottom += composicion[:, j]
 
     ax1.axvline(media, color='crimson', ls='--', lw=2, label=f'Media: {media:.1f} min')
-    ax1.axvline(p5,    color='black',   ls=':',  lw=2, label=f'P5  (mín): {p5:.1f} min')
-    ax1.axvline(p95,   color='dimgray', ls=':',  lw=2, label=f'P95 (máx): {p95:.1f} min')
+    ax1.axvline(p5,    color='black',   ls=':',  lw=2, label=f'P{int(ALPHA*100):02d}  (mín): {p5:.1f} min')
+    ax1.axvline(p95,   color='dimgray', ls=':',  lw=2, label=f'P{int((1-ALPHA)*100):02d} (máx): {p95:.1f} min')
     ax1.set_xlabel('Tiempo de viaje (minutos)', fontsize=11)
     ax1.set_ylabel('Frecuencia', fontsize=11)
     ax1.set_title(f'Distribución de tiempos por componente — {N} simulaciones', fontsize=12)
