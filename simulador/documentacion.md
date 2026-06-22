@@ -48,7 +48,7 @@ Cada tramo $i$ tiene una distancia $d_i$ (km) y tres velocidades posibles (km/h)
 
 **Tiempo de circulación del tramo $i$:**
 
-$$t_{\text{tramo},i} = \frac{d_i}{v_i} \times 60 \text{ (minutos)}$$
+$$t_{\text{tramo},i} = \frac{d_i[\text{km}]}{v_i[\text{km/h}]} \times 60 \,[\text{min}]$$
 
 donde $v_i$ se sortea de la distribución discreta $\{(0,7; v_{i,0}),\; (0,2; v_{i,1}),\; (0,1; v_{i,2})\}$.
 
@@ -70,7 +70,7 @@ Existen 8 semáforos, clasificados en 3 modelos según su distribución de estad
 
 Por lo tanto, la demora esperada para un semáforo del modelo $m$ es:
 
-$$E[D_{\text{sem},m}] = p_{\text{rojo}} \times 1 + p_{\text{amarillo}} \times \Big(0,5 \times 0 + 0,5 \times 2\Big) = p_{\text{rojo}} + p_{\text{amarillo}}$$
+$$E[D_{\text{sem},m}] = p_{\text{rojo}} \times 1[\text{min}] + p_{\text{amarillo}} \times \Big(0,5 \times 0[\text{min}] + 0,5 \times 2[\text{min}]\Big) = (p_{\text{rojo}} + p_{\text{amarillo}}) \,[\text{min}]$$
 
 ### 2.3 Cruce ferroviario
 
@@ -85,7 +85,7 @@ $$E[D_{\text{sem},m}] = p_{\text{rojo}} \times 1 + p_{\text{amarillo}} \times \B
 
 **Demora esperada por cruce:**
 
-$$E[D_{\text{ffcc}}] = 0,2 \times \big(0,6 \times 3,\!0 + 0,3 \times 1,\!5 + 0,1 \times 5,\!0\big)$$
+$$E[D_{\text{ffcc}}] = 0,2 \times \big(0,6 \times 3,\!0[\text{min}] + 0,3 \times 1,\!5[\text{min}] + 0,1 \times 5,\!0[\text{min}]\big) \,[\text{min}]$$
 
 ### 2.4 Paradas
 
@@ -184,21 +184,21 @@ Como validación del simulador, se calcula analíticamente el tiempo esperado po
 
 **Tramos:**
 
-$$E[T_{\text{tramos}}] = 60 \times \sum_{i=1}^{13} \left[ 0,\!7 \frac{d_i}{v_{i,0}} + 0,\!2 \frac{d_i}{v_{i,1}} + 0,\!1 \frac{d_i}{v_{i,2}} \right] \text{ (minutos)}$$
+$$E[T_{\text{tramos}}] = 60 \times \sum_{i=1}^{13} \left[ 0,\!7 \frac{d_i[\text{km}]}{v_{i,0}[\text{km/h}]} + 0,\!2 \frac{d_i[\text{km}]}{v_{i,1}[\text{km/h}]} + 0,\!1 \frac{d_i[\text{km}]}{v_{i,2}[\text{km/h}]} \right] \,[\text{min}]$$
 
 **Semáforos:**
 
-$$E[D_{\text{sem}}] = \sum_{s=1}^{8} \big( p_{\text{rojo},s} + p_{\text{amarillo},s} \big)$$
+$$E[D_{\text{sem}}] = \sum_{s=1}^{8} \big( p_{\text{rojo},s} + p_{\text{amarillo},s} \big) \,[\text{min}]$$
 
 donde $p_{\text{rojo},s}$ y $p_{\text{amarillo},s}$ dependen del modelo del semáforo $s$.
 
 **Cruce ferroviario:**
 
-$$E[D_{\text{ffcc}}] = 0,\!2 \times \big( 0,\!6 \times 3,\!0 + 0,\!3 \times 1,\!5 + 0,\!1 \times 5,\!0 \big)$$
+$$E[D_{\text{ffcc}}] = 0,\!2 \times \big( 0,\!6 \times 3,\!0[\text{min}] + 0,\!3 \times 1,\!5[\text{min}] + 0,\!1 \times 5,\!0[\text{min}] \big) \,[\text{min}]$$
 
 **Paradas:**
 
-$$E[D_{\text{paradas}}] = \sum_{p=1}^{4} \big( 0,\!4 \times d_{p,1} + 0,\!3 \times d_{p,2} + 0,\!2 \times d_{p,3} + 0,\!1 \times d_{p,4} \big)$$
+$$E[D_{\text{paradas}}] = \sum_{p=1}^{4} \big( 0,\!4 \times d_{p,1}[\text{min}] + 0,\!3 \times d_{p,2}[\text{min}] + 0,\!2 \times d_{p,3}[\text{min}] + 0,\!1 \times d_{p,4}[\text{min}] \big) \,[\text{min}]$$
 
 El **tiempo total esperado** es la suma de estos cuatro componentes:
 
