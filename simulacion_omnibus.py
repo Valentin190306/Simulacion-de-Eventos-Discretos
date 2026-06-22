@@ -201,6 +201,8 @@ if __name__ == '__main__':
     ax2 = axes[1]
     valores_anali = [e_t, e_s, e_f, e_p]
     valores_sim   = [sim_t, sim_s, sim_f, sim_p]
+    total_anali   = sum(valores_anali)
+    total_sim     = sum(valores_sim)
 
     bottom = 0
     for comp, val, col in zip(componentes, valores_anali, colores):
@@ -211,6 +213,29 @@ if __name__ == '__main__':
     for val, col in zip(valores_sim, colores):
         ax2.bar('Simulado', val, bottom=bottom, color=col)
         bottom += val
+
+    # Totales sobre cada barra
+    ax2.text(0, total_anali + 0.5, f'{total_anali:.2f} min',
+             ha='center', va='bottom', fontweight='bold')
+    ax2.text(1, total_sim + 0.5, f'{total_sim:.2f} min',
+             ha='center', va='bottom', fontweight='bold')
+
+    # Diferencia
+    diff = abs(total_anali - total_sim)
+    ax2.text(0.5, max(total_anali, total_sim) + 3,
+             f'Diferencia: {diff:.2f} min  ({diff / max(total_anali, total_sim) * 100:.2f}%)',
+             ha='center', va='bottom', fontsize=9, style='italic',
+             bbox=dict(boxstyle='round,pad=0.3', facecolor='lightyellow', alpha=0.8))
+
+    # Componentes dentro de cada segmento
+    for i, val in enumerate(valores_anali):
+        y = sum(valores_anali[:i]) + val / 2
+        ax2.text(0, y, f'{val:.1f}', ha='center', va='center',
+                 fontsize=7, color='white', fontweight='bold')
+    for i, val in enumerate(valores_sim):
+        y = sum(valores_sim[:i]) + val / 2
+        ax2.text(1, y, f'{val:.1f}', ha='center', va='center',
+                 fontsize=7, color='white', fontweight='bold')
 
     ax2.set_ylabel('Minutos', fontsize=11)
     ax2.set_title('E[tiempo] analítico vs media simulada (por componente)', fontsize=12)
